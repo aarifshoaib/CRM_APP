@@ -4,6 +4,9 @@ import { authRoutes, publicRoutes } from "./router.link";
 import Feature from "../feature";
 import AuthFeature from "../authFeature";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import Login from "../auth/login";
+import { store } from "../../core/data/redux/store";
+import { useSelector } from "react-redux";
 
 const ALLRoutes: React.FC = () => {
     const location = useLocation();
@@ -21,12 +24,18 @@ const ALLRoutes: React.FC = () => {
         document.title = fullTitle;
     }, [fullTitle]);
 
+    const isLoggedIn = useSelector((state: any) => state.entities.auth.list.items) || { "status": 0 };
+    let isAuth = false;
+    isAuth = (isLoggedIn.status === 200) ? true : false;
+
     return (
         <>
             <Helmet>
                 <title>{fullTitle}</title>
             </Helmet>
             <Routes>
+                {!isAuth && <Route path="/" element={<Login />} />}
+
                 <Route element={<Feature />}>
                     {publicRoutes.map((route, idx) => (
                         <Route path={route.path} element={route.element} key={idx} />
