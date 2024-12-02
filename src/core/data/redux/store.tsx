@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import api from '../../../store/middleware/api';
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'
-import reducer from './entities';
+import slice from './commonSlice';
 
 
 const persistConfig = {
@@ -10,7 +10,7 @@ const persistConfig = {
   storage
 };
 
-const persistedReducer = persistReducer(persistConfig, reducer);
+const persistedReducer = persistReducer(persistConfig, slice);
 
 const store = configureStore({
   reducer: persistedReducer,

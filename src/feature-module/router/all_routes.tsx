@@ -34,7 +34,7 @@ export const all_routes = {
     contactGrid: "/crm/contact-grid",
     companiesGrid: "/crm/companies-grid",
     compaignComplete: "/crm/compaign-complete",
-    companies: "/companies",
+    companies: "companies",
     leadsDetails: "/leads-details",
     leads: "/leads",
     projectsGrid: "/crm/project-grid",

@@ -27,7 +27,7 @@ const Login = () => {
     }
     console.log(page);
     const resp = await dispatch(await checkAuth(page));
-    console.log(await store.getState().entities.auth.list);
+    //console.log(await store.getState().entities.auth.list);
   };
 
 

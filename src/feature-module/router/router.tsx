@@ -5,7 +5,6 @@ import Feature from "../feature";
 import AuthFeature from "../authFeature";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import Login from "../auth/login";
-import { store } from "../../core/data/redux/store";
 import { useSelector } from "react-redux";
 
 const ALLRoutes: React.FC = () => {
