@@ -91,9 +91,9 @@ const countries = [
 ];
 
 export const formFields = [
-    { type: "textbox", title: "Company Name", field: "name", isRequired: true, columnSize: 12, isList: true, listType: "text", isPrimary: true, heading: "Name", link: true, route: "/crm/companyDetails", linkValues: ["id"] },
+    { type: "textbox",  title: "Name", field: "name", isRequired: false, columnSize: 12, isList: true, listType: "text", isPrimary: true, heading: "Name", link: true, route: "/crm/companyDetails", linkValues: ["id"] },
     { type: "textbox", title: "Email Address", field: "email", isRequired: true, columnSize: 12, inputType: "email", isList: true, isPrimary: true, heading: "Email", listtype: "text" },
-    { type: "textbox", title: "Phone 1", field: "phone1", isRequired: true, columnSize: 6, inputType: "tel", isList: true, heading: "Phone", listType: "text" },
+    { type: "textbox", title: "Phone 1", field: "phone1", isRequired: true, columnSize: 6, inputType: "tel", isList: true, heading: "Phone", listType: "text", isPrimary: true },
     { type: "textbox", title: "Phone 2", field: "phone2", isRequired: false, columnSize: 6, inputType: "tel" },
     { type: "textbox", title: "Fax", field: "fax", isRequired: true, columnSize: 6, inputType: "tel" },
     { type: "textbox", title: "Website", field: "website", isRequired: true, columnSize: 6, inputType: "url", placeholder: "https://www.example.com" },
@@ -137,7 +137,8 @@ export const formFields = [
         defaultValue: "Collab",
         isList: true,
         heading: "Tagged",
-        listType: 'tags'
+        listType: 'tags',
+        isRequired: true
     },
     {
         type: "select",
@@ -146,7 +147,9 @@ export const formFields = [
         isRequired: true,
         columnSize: 6,
         isSearchable: true,
-        data: dealsopen
+        data: dealsopen,
+        isList: true,
+        isPrimary: true,
     },
     {
         type: "select",
@@ -155,7 +158,9 @@ export const formFields = [
         isRequired: true,
         columnSize: 6,
         isSearchable: false,
-        data: activities
+        data: activities,
+        isList: true,
+        
     },
     {
         type: "select",

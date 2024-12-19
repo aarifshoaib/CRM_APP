@@ -23,7 +23,7 @@ const ALLRoutes: React.FC = () => {
         document.title = fullTitle;
     }, [fullTitle]);
 
-    const isLoggedIn = useSelector((state: any) => state.entities.auth.list.items) || { "status": 0 };
+    const isLoggedIn = useSelector((state: any) => state.entities?.auth?.list.items) || { "status": 0 };
     let isAuth = false;
     isAuth = (isLoggedIn.status === 200) ? true : false;
 
