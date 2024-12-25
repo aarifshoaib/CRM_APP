@@ -7,7 +7,7 @@ import { generateValidationSchema } from "../../../core/common/dynamicForm/valid
 import { FormValidation } from "../../../core/common/dynamicForm/form.validation";
 import {companiesContext} from "./context/companies.context";
 
-const NewCompany = () => {
+const NewCompany = ({data}) => {
 
     const [form, setForm] = useState({ name: '', email: '', phone1: '', phone2: '', fax: '', website: '', ratings: '', owner: '', tags: '', deals: '', source: '', industry: '', contacts: '', currency: '', language: '', description: '', address: '', city: '', state: '', country: '', zip: '', facebook: '', twitter: '', linkedin: '', skype: '', whatsapp: '', instagram: '' });
     const [attachments, setAttachments] = useState([]);
@@ -15,7 +15,6 @@ const NewCompany = () => {
 
     const SaveCompany = async () => {
         try {
-            console.log('form', form);
             const schema = generateValidationSchema({ controls: [formFields, address, social] });
             await schema.validate(form, { abortEarly: false });
             const response = await compantCtx.saveCompany(form);
@@ -56,90 +55,39 @@ const NewCompany = () => {
             </div>
             <div className="offcanvas-body">
                 <form>
-                    <div className="accordion" id="main_accordion">
-                        {/* Basic Info */}
-                        <div className="accordion-item rounded mb-3">
-                            <div className="accordion-header">
-                                <Link
-                                    to="#"
-                                    className="accordion-button accordion-custom-button bg-white rounded fw-medium text-dark"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#basic"
-                                >
-                                    <span className="avatar avatar-md rounded text-dark border me-2">
-                                        <i className="ti ti-user-plus fs-20" />
-                                    </span>
-                                    Basic Info
-                                </Link>
-                            </div>
+                    <div id="main_accordion" className="accordion">
+                        {data?.sections?.map((section) => (
                             <div
-                                className="accordion-collapse collapse show"
-                                id="basic"
-                                data-bs-parent="#main_accordion"
+                                key={section.id}
+                                className="accordion-item rounded mb-3"
                             >
-                                <div className="accordion-body border-top">
-                                    <DynamicForm formFields={formFields} form={form} setForm={setForm} ctx= {compantCtx} />
+                                <div className="accordion-header">
+                                    <Link
+                                        to="#"
+                                        className={`accordion-button accordion-custom-button bg-white rounded fw-medium text-dark`}
+                                        data-bs-toggle="collapse"
+                                        data-bs-target={`#${section.id}`}
+                                    >
+                                        <span className="avatar avatar-md rounded text-dark border me-2">
+                                            <i className={`${section.icon} fs-20`} />
+                                        </span>
+                                        {section.title}
+                                    </Link>
                                 </div>
-                            </div>
-                        </div>
-                        {/* /Basic Info */}
-                        {/* Address Info */}
-                        <div className="accordion-item border-top rounded mb-3">
-                            <div className="accordion-header">
-                                <Link
-                                    to="#"
-                                    className="accordion-button accordion-custom-button rounded bg-white fw-medium text-dark"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#address"
+                                <div
+                                    className={`accordion-collapse collapse `}
+                                    id={section.id}
+                                    data-bs-parent="#main_accordion"
                                 >
-                                    <span className="avatar avatar-md rounded text-dark border me-2">
-                                        <i className="ti ti-map-pin-cog fs-20" />
-                                    </span>
-                                    Address Info
-                                </Link>
-                            </div>
-                            <div
-                                className="accordion-collapse collapse"
-                                id="address"
-                                data-bs-parent="#main_accordion"
-                            >
-                                <div className="accordion-body border-top">
-                                    <div className="row">
-                                        <DynamicForm formFields={address} form={form} setForm={setForm} ctx={compantCtx} />
+                                    <div className="accordion-body border-top">
+                                        <DynamicForm formFields={section.fields} form={form} setForm={setForm} ctx={compantCtx} />
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        {/* /Address Info */}
-                        {/* Social Profile */}
-                        <div className="accordion-item border-top rounded mb-3">
-                            <div className="accordion-header">
-                                <Link
-                                    to="#"
-                                    className="accordion-button accordion-custom-button rounded bg-white fw-medium text-dark"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#social"
-                                >
-                                    <span className="avatar avatar-md rounded text-dark border me-2">
-                                        <i className="ti ti-social fs-20" />
-                                    </span>
-                                    Social Profile
-                                </Link>
-                            </div>
-                            <div
-                                className="accordion-collapse collapse"
-                                id="social"
-                                data-bs-parent="#main_accordion"
-                            >
-                                <div className="accordion-body border-top">
-                                    <div className="row">
-                                        <DynamicForm formFields={social} form={form} setForm={setForm} ctx={compantCtx} />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {/* /Social Profile */}
+                        ))}
                     </div>
+
+
                     <div className="d-flex align-items-center justify-content-end">
                         <button
                             type="button"

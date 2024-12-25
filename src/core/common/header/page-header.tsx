@@ -5,10 +5,13 @@ import { all_routes } from "../../../feature-module/router/all_routes";
 import GenericAntdTable from "../dynamicForm/dynamicTable";
 import { Checkbox } from "antd";
 import ColumnVisibilityManager from "../dynamicForm/manageColumns";
+import ImageWithBasePath from "../imageWithBasePath";
+import DynamicGrid from "../dynamicForm/dynamicGrid";
 
 const PageMaster = ({
     data,
     pageCtx,
+    formData,
     isColumnManagable = true,
     isExport = true,
     isAddRequired = true,
@@ -18,20 +21,29 @@ const PageMaster = ({
 }) => {
     const route = all_routes;
     const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>({});
-    const [fields, setFields] = useState(data?.fields || []);
+    const [fields, setFields] = useState([]);
+    const [isListView, setIsListView] = useState(true);
 
     // Synchronize visible columns when fields change
     useEffect(() => {
-        if (data?.fields) {
-            setFields(data?.fields);
+        console.log(data);
+        let fields = [];
+        let flds = data?.sections?.map((section) => {
+            section.fields.map((field) => {
+                fields.push(field);
+            });
+        }
+        ) || [];
+        if (fields && fields.length > 0) {
+            setFields(fields);
             setVisibleColumns(
-                data?.fields?.flat().reduce((acc, field) => {
+                fields.flat().reduce((acc, field) => {
                     if (field.field && field.isPrimary) acc[field.field] = true;
                     return acc;
                 }, {} as Record<string, boolean>) || {}
             );
         }
-    }, [data?.fields]);
+    }, [data?.sections]);
 
     const handleVisibilityChange = (fieldKey: string, isVisible: boolean) => {
         setVisibleColumns((prev) => ({
@@ -46,7 +58,8 @@ const PageMaster = ({
 
     return (
         <>
-            {data?.fields?.length > 0 && pageCtx ? (
+            {fields.length > 0 && pageCtx ? (
+
                 <div className="page-wrapper">
                     <div className="content">
                         <div className="row">
@@ -88,11 +101,11 @@ const PageMaster = ({
                                                             />
                                                         )}
                                                         {isGridView && (
-                                                            <div className="view-icons">
-                                                                <Link to="#" className="active">
+                                                            <div className="view-icons me-2">
+                                                                <Link to="#" className={isListView ? 'active' : ''} onClick={() => setIsListView(!isListView)}>
                                                                     <i className="ti ti-list-tree" />
                                                                 </Link>
-                                                                <Link to={route.companiesGrid}>
+                                                                <Link to='#' className={!isListView ? 'active' : ''} onClick={() => setIsListView(!isListView)}>
                                                                     <i className="ti ti-grid-dots" />
                                                                 </Link>
                                                             </div>
@@ -132,21 +145,33 @@ const PageMaster = ({
                                         <div className="d-flex align-items-center justify-content-between flex-wrap row-gap-2 mb-4">
                                             <div className="d-flex align-items-center flex-wrap row-gap-2"></div>
                                         </div>
-                                        <div className="table-responsive custom-table">
+
+                                        {isListView && <> <div className="table-responsive custom-table">
                                             <GenericAntdTable
                                                 fields={fields} // Ensure updated fields are passed
                                                 data={pageCtx?.list}
                                                 visibleColumns={visibleColumns}
                                             />
                                         </div>
-                                        <div className="row align-items-center">
-                                            <div className="col-md-6">
-                                                <div className="datatable-length" />
+                                            <div className="row align-items-center">
+                                                <div className="col-md-6">
+                                                    <div className="datatable-length" />
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <div className="datatable-paginate" />
+                                                </div>
                                             </div>
-                                            <div className="col-md-6">
-                                                <div className="datatable-paginate" />
-                                            </div>
-                                        </div>
+                                        </>
+                                        }
+                                        {!isListView && <div className="row">
+                                            <DynamicGrid
+                                                fields={fields} // Ensure updated fields are passed
+                                                data={pageCtx?.list}
+                                                visibleColumns={visibleColumns}
+                                                formData={formData}
+                                            />
+                                        </div>}
+
                                     </div>
                                 </div>
                             </div>

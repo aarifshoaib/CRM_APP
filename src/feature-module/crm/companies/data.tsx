@@ -91,7 +91,7 @@ const countries = [
 ];
 
 export const formFields = [
-    { type: "textbox",  title: "Name", field: "name", isRequired: false, columnSize: 12, isList: true, listType: "text", isPrimary: true, heading: "Name", link: true, route: "/crm/companyDetails", linkValues: ["id"] },
+    { type: "textbox", title: "Name", field: "name", isRequired: false, columnSize: 12, isList: true, listType: "text", isPrimary: true, isTitle:true, heading: "Name", link: true, route: "/crm/companyDetails", linkValues: ["id"] },
     { type: "textbox", title: "Email Address", field: "email", isRequired: true, columnSize: 12, inputType: "email", isList: true, isPrimary: true, heading: "Email", listtype: "text" },
     { type: "textbox", title: "Phone 1", field: "phone1", isRequired: true, columnSize: 6, inputType: "tel", isList: true, heading: "Phone", listType: "text", isPrimary: true },
     { type: "textbox", title: "Phone 2", field: "phone2", isRequired: false, columnSize: 6, inputType: "tel" },
@@ -104,13 +104,14 @@ export const formFields = [
         columnSize: 6,
         inputType: "number",
         min: 1,
-        max:5,
+        max: 5,
         iconOptions: { icon: "ti ti-star", size: 10, color: "FFF" },
         isList: true,
         heading: "Ratings",
         icon: "fa fa-star filled me-2",
         listType: "text",
         isPrimary: true
+        
     },
     {
         type: "select",
@@ -123,7 +124,8 @@ export const formFields = [
         isList: true,
         heading: "Owner",
         listType: "text",
-        isPrimary: true
+        isPrimary: true,
+        isSubTitle: true
 
     },
     {
@@ -160,7 +162,7 @@ export const formFields = [
         isSearchable: false,
         data: activities,
         isList: true,
-        
+
     },
     {
         type: "select",
@@ -219,7 +221,6 @@ export const formFields = [
     }
 ];
 
-
 export const address = [
     { type: "textbox", title: "Address", field: "address", isRequired: true, columnSize: 12 },
     { type: "textbox", title: "City", field: "city", isRequired: false, columnSize: 6 },
@@ -237,7 +238,7 @@ export const address = [
         heading: 'Location'
     },
     { type: "textbox", title: "Zip Code", field: "zip", isRequired: false, columnSize: 6 },
-    
+
 ];
 
 export const social = [
@@ -250,15 +251,33 @@ export const social = [
 ];
 
 export const CompaniesData = {
-    name:"Companies",
+    name: "Companies",
     version: 1.0,
     listRoute: '/crm/companies',
     gridRoute: '/crm/companies',
     formRoute: '/crm/company',
     addButtonName: 'Add Company',
-    fields : [
-        ...formFields,
-        ...address,
-        ...social
-    ],
+    sections: [
+        {
+            title: "Company Information",
+            id: "companyInfo",
+            icon: "ti ti-user",
+            type: "accordion",
+            fields: [ ...formFields ]
+        },
+        {
+            title: "Address",
+            id: "address",
+            icon: "ti ti-map",
+            type: "accordion",
+            fields: [ ...address ]
+        },
+        {
+            title: "Social",
+            id: "social",
+            icon: "ti ti-share",
+            type: "accordion",
+            fields: [ ...social ]
+        }
+    ]
 }

@@ -99,7 +99,7 @@ const Companies = () => {
 
   return (
     <>
-      <PageMaster data={localdata} pageCtx={companyCtx}>
+      <PageMaster data={localdata} pageCtx={companyCtx} formData={CompaniesData}>
         <></>
         <div className="modal fade" id="delete_contact" role="dialog">
           <div className="modal-dialog modal-dialog-centered">
@@ -379,7 +379,7 @@ const Companies = () => {
             </form>
           </div>
         </div>
-        <NewCompany />
+        <NewCompany data={localdata} />
 
         <Modal show={openModal} onHide={() => setOpenModal(false)}>
 
