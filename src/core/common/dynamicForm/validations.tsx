@@ -2,52 +2,55 @@ import * as Yup from 'yup';
 
 export const generateValidationSchema = ({ controls }) => {
     const schema = {};
-    const allfields = controls.flat();
+    const allFields = controls.flat();
 
-    allfields.forEach((field) => {
+    allFields.forEach((field) => {
         let validation;
-        const fieldtype = field.inputType || field.type || 'string';
+        const fieldType = field.inputType || field.type || 'string';
 
-        if (fieldtype === 'select') {
-            if (field.isMulti?.toString() === 'true') {
-                validation = Yup.array()
-                    .of(
-                        Yup.object().shape({
-                            value: Yup.string().required('Selection is required'),
-                        }),
-                    )
+        // Handle 'select' type fields (including the source field validation)
+        //if (fieldType === 'select') {
+            //if (field.isMulti?.toString() === 'true') {
+                //validation = Yup.array()
+                    //.of(
+                       // Yup.object().shape({
+                            //value: Yup.string().required('Selection is required'),
+                       // })
+                   // )
+                   if (fieldType === 'select') {
+                    if (field.isMulti) {
+                        validation = Yup.array()
+                            .of(
+                                Yup.object().shape({
+                                    value: Yup.string().required('Selection is required'),
+                                })
+                            )
                     .min(1, `${field.title || 'Selection'} is required`)
                     .nullable()
                     .transform((value) => (value === '' ? null : value)); // Treat empty as null
             } else {
                 validation = Yup.object()
                     .nullable()
-                    .transform((value) => (value === '' ? null : value))
-                    .required(`${field.title || 'Field'} is required`);
+                    .required(`${field.title || 'Field'} is required`)
+                    .transform((value) => (value === '' ? null : value)); // Treat empty as null
             }
-        } else if (fieldtype === 'email') {
+        } else if (fieldType === 'email') {
             validation = Yup.string()
                 .nullable()
                 .email(`${field.title} is not a valid email address`);
-        } else if (fieldtype === 'tel') {
+        } else if (fieldType === 'tel') {
             validation = Yup.string()
                 .nullable()
-                .matches(/^[0-9]{10}$/, `${field.title} must be a valid phone number (10 digits)`)
-                .test('is-tel-required', `${field.title} must be a valid phone number`, function (value) {
-                    return value ? /^[0-9]{10}$/.test(value) : true; // Validate only if value exists
-                });
-        } else if (fieldtype === 'url') {
+                .matches(/^[0-9]{10}$/, `${field.title} must be a valid phone number (10 digits)`);
+        } else if (fieldType === 'url') {
             validation = Yup.string()
                 .nullable()
-                .url(`${field.title} must be a valid URL`)
-                .test('is-url-required', `${field.title} must be a valid URL`, function (value) {
-                    return value ? /^https?:\/\/[\w-]+\.[\w-]+/.test(value) : true; // Validate only if value exists
-                });
-        } else if (fieldtype === 'number') {
+                .url(`${field.title} must be a valid URL`);
+        } else if (fieldType === 'number') {
             validation = Yup.number()
                 .nullable()
                 .typeError(`${field.title} must be a valid number`);
-        } else if (fieldtype === 'date') {
+        } else if (fieldType === 'date') {
             validation = Yup.date()
                 .nullable()
                 .typeError(`${field.title} must be a valid date`);
@@ -64,10 +67,9 @@ export const generateValidationSchema = ({ controls }) => {
 
         // Add transformation for empty strings
         validation = validation.transform((value, originalValue) =>
-            originalValue === '' ? null : value,
+            originalValue === '' ? null : value
         );
 
-        // Add the validation for the field to the schema
         schema[field.field] = validation;
     });
 

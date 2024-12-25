@@ -1,26 +1,18 @@
 import * as yup from 'yup';
-export const FormValidation = (err: yup.ValidationError) => {
-    const mergedErrors: any = {};
+
+// This function merges and formats validation errors
+export const FormValidation = (err) => {
+    const mergedErrors = {};
 
     if (err instanceof yup.ValidationError) {
-        // Option 1: Display the first error message
-        const x = err.inner.map(item => {
-            const { path, errors } = item;
+        err.inner.forEach((item) => {
+            const { path, message } = item;
 
             if (!mergedErrors[path]) {
-                mergedErrors[path] = [];
+                mergedErrors[path] = message; // Only take the first error for each field
             }
-            mergedErrors[path].push(...errors);
-
         });
     }
 
     return mergedErrors;
-}
-
-export const ValidateField = (field, errors) => {
-    const errs = FormValidation(errors);
-
-    return errs[field] ? errs[field] : null;
-
-}
+};

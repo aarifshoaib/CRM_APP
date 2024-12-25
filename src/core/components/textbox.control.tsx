@@ -1,153 +1,114 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-export class TextboxProps {
-    title?: string;
-    subtext?: string;
-    errors?: any;
-    updateErrors?: any;
-    isRequired?: boolean;
-    form?: any;
-    field?: string;
-    children?: any;
-    style?: any;
-    placeholder?: string;
-    placeholderColor?: string;
-    updateForm?: any;
-    showError?: boolean;
-    isPassword?: boolean;
-    multiline?: boolean;
-    hasError?: any;
-    iconOptions?: { icon: string, size: number, color: string };
-    iconClearOptions?: { icon: string, size: number, color: string };
-    inputOptions?: { style: any };
-    clear: boolean;
-    className?: string;
-    datarole?: string;
-    defaultValue?: string;
-
-    constructor(props: TextboxProps) {
-        this.title = props.title;
-        this.errors = props.errors;
-        this.updateErrors = props.updateErrors;
-        this.isRequired = props.isRequired;
-        this.form = props.form;
-        this.field = props.field;
-        this.children = props.children;
-        this.showError = props.showError;
-        this.style = props.style;
-        this.placeholder = props.placeholder;
-        this.placeholderColor = props.placeholderColor;
-        this.updateForm = props.updateForm;
-        this.isPassword = props.isPassword;
-        this.multiline = props.multiline;
-        this.hasError = props.hasError;
-        this.iconOptions = props.iconOptions;
-        this.iconClearOptions = props.iconClearOptions;
-        this.inputOptions = props.inputOptions;
-        this.clear = props.clear;
-        this.subtext = props.subtext;
-        this.className = props.className;
-        this.datarole = props.datarole;
-        this.defaultValue = props.defaultValue;
-    }
-}
-
-const Textbox = (
-    {
-        title,
-        errors = {},
-        updateErrors = null,
-        isRequired = false,
-        form = {},
-        field = '',
-        onBlur = null,
-        onChange = null,
-        children = null,
-        style = {},
-        submitEditing = null,
-        placeholder = '',
-        updateForm = null,
-        isPassword = false,
-        multiline = false,
-        onclear = null,
-        type = 'text',
-        hasError = false,
-        clear = false,
-        subtext = null,
-        size = 3,
-        className = 'form-control',
-        iconOptions = { icon: null, size: 0, color: null },
-        datarole = null,
-        defaultValue = null,
-        inputOptions = { style: null }, ...props
-    }) => {
-    const [text, setText] = useState('');
+const Textbox = ({
+    title = "",
+    errors = {},
+    updateErrors = null,
+    isRequired = false,
+    form = {},
+    field = "",
+    onBlur = () => {},
+    onChange = null,
+    children = null,
+    style = {},
+    submitEditing = null,
+    placeholder = "",
+    updateForm = null,
+    isPassword = false,
+    multiline = false,
+    onclear = null,
+    type = "text",
+    hasError = false,
+    clear = false,
+    subtext = null,
+    size = 3,
+    className = "form-control",
+    iconOptions = { icon: null, size: 0, color: null },
+    datarole = null,
+    defaultValue = "",
+    inputOptions = { style: null },
+    ...props
+}) => {
+    const [text, setText] = useState(defaultValue || form[field] || ""); // Default value for `text`
     const [isFocused, setIsFocused] = useState(false);
     const [showError, setShowError] = useState(false);
+
+    // Update `form` when `text` changes
     useEffect(() => {
         if (updateForm) {
-            updateForm({ ...form, [field]: text })
+            updateForm((prevForm) => ({
+                ...prevForm,
+                [field]: text,
+            }));
         }
-        return () => {
+    }, [text, updateForm, field]);
 
-        }
-    }, [text]);
-
-    const onchange = (e) => {
-        setText(e.target.value)
-    }
-
+    // Show or hide errors
     useEffect(() => {
-        hasError[0] ? setShowError(true) : setShowError(false)
-    }, [hasError[0]])
+        setShowError(Boolean(hasError));
+    }, [hasError]);
 
+    // Clear field when `clear` is true
     useEffect(() => {
         if (clear) {
-            updateForm({ ...form, [field]: '' })
-            setText('');
+            setText("");
+            if (updateForm) {
+                updateForm((prevForm) => ({
+                    ...prevForm,
+                    [field]: "",
+                }));
+            }
         }
-    }, [clear])
+    }, [clear, updateForm, field]);
+
+    // Handle input changes
+    const handleChange = (e) => {
+        setText(e.target.value);
+        if (onChange) {
+            onChange(e);
+        }
+    };
 
     return (
         <div className={`mb-${size}`}>
-            <label className="col-form-label">{title}
+            <label className="col-form-label">
+                {title}
                 {isRequired && <span className="text-danger"> *</span>}
             </label>
-            {iconOptions.icon && <div className="icon-form-end">
-                <span className="form-icon">
-                    <i className={iconOptions.icon} />
-                </span>
-                {!multiline &&
-                    <input type={type} className={className} onChange={onchange}
-                        value={text || ''} onBlur={onBlur}
+            <div className={iconOptions.icon ? "icon-form-end" : ""}>
+                {iconOptions.icon && (
+                    <span className="form-icon">
+                        <i className={iconOptions.icon} />
+                    </span>
+                )}
+                {!multiline ? (
+                    <input
+                        type={type}
+                        className={className}
+                        onChange={handleChange}
+                        value={text}
+                        onBlur={onBlur}
                         placeholder={placeholder}
-                        {...props} />
-                }
-                {multiline &&
-                    <textarea className={className} onChange={onchange}
-                        value={text || ''} onBlur={onBlur}
+                        {...props}
+                    />
+                ) : (
+                    <textarea
+                        className={className}
+                        onChange={handleChange}
+                        value={text}
+                        onBlur={onBlur}
                         placeholder={placeholder}
-                        {...props} />
-                }
-                
-            </div>}
-            {!iconOptions.icon && !multiline &&
-                <input type={type} className={className} onChange={onchange}
-                    value={text} onBlur={onBlur}
-                    placeholder={placeholder}
-                    {...props}
-                />
-            }
-            {!iconOptions.icon && multiline &&
-                <textarea className={className} onChange={onchange}
-                    value={text} onBlur={onBlur}
-                    placeholder={placeholder}
-                    {...props}
-                />
-            }
-
-            {hasError && <small className="text-muted"><span className="text-danger">{hasError[0]}</span></small>}
+                        {...props}
+                    />
+                )}
+            </div>
+            {showError && (
+                <small className="text-danger">
+                    {typeof hasError === "string" ? hasError : hasError[0]}
+                </small>
+            )}
         </div>
-    )
-}
-export default Textbox
+    );
+};
+
+export default Textbox;
